@@ -14,10 +14,10 @@ public class LaunchOptionsEditor(IVdfFileHelper vdfFileHelper, IDirectoryStorage
         var configFilePath = Path.Combine(configDirectory, Constants.LocalConfigFileName);
 
         BackupConfigFile(configFilePath, configDirectory);
-
+        
         var launchOptionsString = Constants.LaunchOptionsText.Replace(Constants.LaunchOptionsDirectoryKey,
-            Path.Combine(_directoryStorage.SteamRootPath, Constants.SteamAppsDirectory, Constants.BatchFileName));
-
+            Path.Combine(_directoryStorage.SteamRootPath, Constants.SteamAppsDirectory, Constants.BatchFileName).Replace("\\", "\\\\"));
+        
         var configFileLines = (await _ioWrapper.ReadAllLinesAsync(configFilePath)).ToList();
         var configFileData = _vdfFileHelper.GetStartAndEndIndexOfSection(configFileLines);
 

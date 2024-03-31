@@ -21,8 +21,9 @@ public class ApplicationFileAndDirectoryHelper(
 
         CreateDestinationDirectory();
 
-        var batFileContent = Constants.BatchFileContent.Replace(Constants.BatchFileWorkingDirectoryKey, AppDomain.CurrentDomain.BaseDirectory);
-        await _ioWrapper.WriteAllTextAsync(Path.Combine(_directoryStorage.SteamRootPath, Constants.SteamAppsDirectory, Constants.BatchFileName), batFileContent);
+        var batchFileContent = Constants.BatchFileContent.Replace(Constants.BatchFileWorkingDirectoryKey, AppDomain.CurrentDomain.BaseDirectory);
+        _logger.LogInformation("Writing batch file content {Content}", batchFileContent);
+        await _ioWrapper.WriteAllTextAsync(Path.Combine(_directoryStorage.SteamRootPath, Constants.SteamAppsDirectory, Constants.BatchFileName), batchFileContent);
         _logger.LogInformation("Batch file created");
     }
 
