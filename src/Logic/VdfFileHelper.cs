@@ -7,32 +7,33 @@ public class VdfFileHelper : IVdfFileHelper
         const int maxNumberOfLinesToSearch = 20;
 
         var startIndexOfSection = -1;
-        var sectionsFound = false;
         var launchOptionsFound = false;
         var launchOptionsIndex = -1;
-
+        
         for (var i = 0; i < lines.Count - 1; i++)
         {
-            if (lines[i].Contains(Constants.DragonsDogma2Id) && lines[i + 1].Contains("{") && lines[i + 2].Contains("2054970_eula"))
+            if (lines[i].Contains(Constants.DragonsDogma2Id) && lines[i + 1].Contains("{"))
             {
-                sectionsFound = true;
-                startIndexOfSection = i;
-
-                // Check if LaunchOptions already exists. We're assuming that it should be withing 20 lines of the start of the section
-                for (var j = startIndexOfSection;  j < i+ maxNumberOfLinesToSearch; j++)
+                var potentialSectionLines = lines.Skip(i).Take(maxNumberOfLinesToSearch).ToList();
+                
+                if (potentialSectionLines.Any(x => x.Contains("2054970_eula")) || potentialSectionLines.Any(x => x.Contains("Playtime")))
                 {
-                    if(lines[j].Contains("LaunchOptions") && lines[j+1].Contains("}"))
-                    {
-                        launchOptionsFound = true;
-                        launchOptionsIndex = j;
-                        break;
-                    }
-                }
-            }
+                    startIndexOfSection = i;
 
-            if (sectionsFound)
-            {
-                break;
+                    // Check if LaunchOptions already exists. We're assuming that it should be withing 20 lines of the start of the section
+                    for (var j = startIndexOfSection;  j < i+ maxNumberOfLinesToSearch; j++)
+                    {
+                        if(lines[j].Contains("LaunchOptions", StringComparison.Ordinal) && lines[j+1].Contains("}", StringComparison.Ordinal))
+                        {
+                            launchOptionsFound = true;
+                            launchOptionsIndex = j;
+                            break;
+                        }
+                    }
+
+                    // No need to continue the loop once the section is found
+                    break;
+                }
             }
         }
         return new LocalConfigFileData(startIndexOfSection, launchOptionsFound, launchOptionsIndex);

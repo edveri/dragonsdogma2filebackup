@@ -1,4 +1,6 @@
-namespace DragonsDogma2FileBackupWorker.UnitTests.Logic;
+using DragonsDogma2FileBackupWorker;
+
+namespace UnitTests.Logic;
 
 [TestFixture]
 public class VdfFileHelperTests
@@ -26,23 +28,26 @@ public class VdfFileHelperTests
         Assert.That(result.LaunchOptionsIndex, Is.EqualTo(5));
     }
     
-    [Test]
-    public void GetStartAndEndIndexOfSection_WhenLaunchOptionsNotFound_ReturnsCorrectData()
+    [TestCaseSource(nameof(TestCases))]
+    public void GetStartAndEndIndexOfSection_WhenLaunchOptionsNotFound_ReturnsCorrectData(IList<string> configFileContentLines, LocalConfigFileData localConfigFileData)
     {
-        // Arrange
-        var configFileContentLines = new List<string> { "", Constants.DragonsDogma2Id, "{",  "2054970_eula", "", "", "", "", "", "","", "", "", "", "", "", "","", "", "", ""};
-
         // Act
         var result = _vdfFileHelper.GetStartAndEndIndexOfSection(configFileContentLines);
 
         // Assert
-        Assert.That(result.StartIndex, Is.EqualTo(1));
-        Assert.That(result.LaunchOptionsExists, Is.False);
-        Assert.That(result.LaunchOptionsIndex, Is.EqualTo(-1));
+        Assert.That(result.StartIndex, Is.EqualTo(localConfigFileData.StartIndex));
+        Assert.That(result.LaunchOptionsExists, Is.EqualTo(localConfigFileData.LaunchOptionsExists));
+        Assert.That(result.LaunchOptionsIndex, Is.EqualTo(localConfigFileData.LaunchOptionsIndex));
     }
 
+    private static readonly object[] TestCases =
+    [
+        new object[] { new List<string>{ "", Constants.DragonsDogma2Id, "{", "2054970_eula", "", "", "", "", "","", "", "", "", "", "", "","", "", "", "", "" }, new LocalConfigFileData(1, false, -1)},
+        new object[] { new List<string>{ "", "", "", Constants.DragonsDogma2Id, "{", "", "", "", "Playtime", "","", "", "", "", "", "", "","", "", "", "", "", "", "" }, new LocalConfigFileData(3, false, -1)}
+    ];
+    
     [Test]
-    public void UpdateSteamLaunchConfig_WhenLaunchOptionsDoesNotExist_UpdatesConfigCorrectly()
+    public void UpdateSteamLaunchConfig_WhenLaunchOptionExists_UpdatesConfigCorrectly()
     {
         // Arrange
         var configFileData = new LocalConfigFileData(3, false, 5);
