@@ -9,29 +9,27 @@ public class VdfFileHelper : IVdfFileHelper
         var startIndexOfSection = -1;
         var launchOptionsFound = false;
         var launchOptionsIndex = -1;
-        
+
         for (var i = 0; i < lines.Count - 1; i++)
         {
-            if (lines[i].Contains(Constants.DragonsDogma2Id) && lines[i + 1].Contains("{"))
+            if (lines[i].Contains(Constants.DragonsDogma2Id, StringComparison.OrdinalIgnoreCase) && lines[i + 1].Contains("{", StringComparison.OrdinalIgnoreCase))
             {
-                var potentialSectionLines = lines.Skip(i).Take(maxNumberOfLinesToSearch).ToList();
-                
-                if (potentialSectionLines.Any(x => x.Contains("2054970_eula")) || potentialSectionLines.Any(x => x.Contains("Playtime")))
+                startIndexOfSection = i;
+
+                // Check if LaunchOptions already exists. We're assuming that it should be withing 20 lines of the start of the section
+                for (var j = startIndexOfSection;  j < i+ maxNumberOfLinesToSearch; j++)
                 {
-                    startIndexOfSection = i;
-
-                    // Check if LaunchOptions already exists. We're assuming that it should be withing 20 lines of the start of the section
-                    for (var j = startIndexOfSection;  j < i+ maxNumberOfLinesToSearch; j++)
+                    if(lines[j].Contains("LaunchOptions", StringComparison.OrdinalIgnoreCase))
                     {
-                        if(lines[j].Contains("LaunchOptions", StringComparison.Ordinal) && lines[j+1].Contains("}", StringComparison.Ordinal))
-                        {
-                            launchOptionsFound = true;
-                            launchOptionsIndex = j;
-                            break;
-                        }
+                        launchOptionsFound = true;
+                        launchOptionsIndex = j;
+                        break;
                     }
+                }
 
-                    // No need to continue the loop once the section is found
+                // No need to continue the loop once the section is found
+                if (launchOptionsFound || lines.Skip(i).Take(maxNumberOfLinesToSearch).Any(x => x.Contains("2054970_eula") || x.Contains("Playtime")))
+                {
                     break;
                 }
             }
@@ -42,14 +40,13 @@ public class VdfFileHelper : IVdfFileHelper
     public void UpdateSteamLaunchConfig(LocalConfigFileData configFileData, List<string> configFileLines,
         string launchOptionsString)
     {
-        switch (configFileData.LaunchOptionsExists)
+        if (configFileData.LaunchOptionsExists)
         {
-            case false:
-                configFileLines.Insert(configFileData.StartIndex+2, launchOptionsString);
-                break;
-            default:
-                configFileLines[configFileData.LaunchOptionsIndex] = launchOptionsString;
-                break;
+            configFileLines[configFileData.LaunchOptionsIndex] = launchOptionsString;
+        }
+        else
+        {
+            configFileLines.Insert(configFileData.StartIndex+2, launchOptionsString);
         }
     }
 }
