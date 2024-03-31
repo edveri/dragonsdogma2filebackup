@@ -1,9 +1,4 @@
-using DragonsDogma2FileBackupWorker;
-using DragonsDogma2FileBackupWorker.Logic;
-using DragonsDogma2FileBackupWorker.Logic.Abstract;
-using DragonsDogma2FileBackupWorker.Logic.IO.Abstract;
-
-namespace UnitTests.Logic;
+namespace DragonsDogma2FileBackupWorker.UnitTests.Logic;
 
 [TestFixture]
 public class CopySaveFilesTests
@@ -69,7 +64,7 @@ public class CopySaveFilesTests
         _mockDirectoryStorage.Setup(ds => ds.SteamSaveFileDirectory).Returns(steamSaveDirectory)
             .Verifiable();
         _mockIoWrapper.Setup(io => io.CombinePath(destinationDirectory, It.IsAny<string>())).Returns("combinedPath");
-        _mockIoWrapper.SetupSequence(io => io.ProcessExists(Constants.DraginsDogma2ProcessName))
+        _mockIoWrapper.SetupSequence(io => io.ProcessExists(Constants.DragonsDogma2ProcessName))
             .Returns(true)
             .Returns(true)
             .Returns(false);

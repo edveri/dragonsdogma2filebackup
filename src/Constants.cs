@@ -21,5 +21,5 @@ public static class Constants
     public const string LocalConfigFileName = "localconfig.vdf";
     public const string LaunchOptionsDirectoryKey = "{LaunchOptionsDirectoryKey}";
     public const string LaunchOptionsText = $@"						""LaunchOptions""		""{LaunchOptionsDirectoryKey}"" %COMMAND%""";
-    public const string DraginsDogma2ProcessName = "DD2";
+    public const string DragonsDogma2ProcessName = "DD2";
 }

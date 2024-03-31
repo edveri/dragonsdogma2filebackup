@@ -1,6 +1,3 @@
-using DragonsDogma2FileBackupWorker.Logic.Abstract;
-using DragonsDogma2FileBackupWorker.Models;
-
 namespace DragonsDogma2FileBackupWorker.Logic;
 
 public class VdfFileHelper : IVdfFileHelper
@@ -44,13 +41,14 @@ public class VdfFileHelper : IVdfFileHelper
     public void UpdateSteamLaunchConfig(LocalConfigFileData configFileData, List<string> configFileLines,
         string launchOptionsString)
     {
-        if (!configFileData.LaunchOptionsExists)
+        switch (configFileData.LaunchOptionsExists)
         {
-            configFileLines.Insert(configFileData.StartIndex+2, launchOptionsString);
-        }
-        else
-        {
-            configFileLines[configFileData.LaunchOptionsIndex] = launchOptionsString;
+            case false:
+                configFileLines.Insert(configFileData.StartIndex+2, launchOptionsString);
+                break;
+            default:
+                configFileLines[configFileData.LaunchOptionsIndex] = launchOptionsString;
+                break;
         }
     }
 }

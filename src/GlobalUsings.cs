@@ -1,3 +1,11 @@
+global using System.ComponentModel.DataAnnotations;
+global using System.Diagnostics;
+global using DragonsDogma2FileBackupWorker.Extensions;
+global using DragonsDogma2FileBackupWorker.Logic;
+global using DragonsDogma2FileBackupWorker.Logic.Abstract;
+global using DragonsDogma2FileBackupWorker.Logic.IO;
+global using DragonsDogma2FileBackupWorker.Logic.IO.Abstract;
+global using DragonsDogma2FileBackupWorker.Models;
 global using Microsoft.Extensions.Options;
 global using Microsoft.VisualBasic.FileIO;
 global using Microsoft.Win32;

@@ -1,7 +1,4 @@
-﻿using DragonsDogma2FileBackupWorker.Logic.Abstract;
-using DragonsDogma2FileBackupWorker.Logic.IO.Abstract;
-
-namespace DragonsDogma2FileBackupWorker.Logic;
+﻿namespace DragonsDogma2FileBackupWorker.Logic;
 
 public class CopySaveFiles(IDirectoryStorage directoryStorage, IIoWrapper ioWrapper, IOptions<CopyOptions> copyOptions, ILogger<CopySaveFiles> logger) : ICopySaveFiles
 {
@@ -24,7 +21,7 @@ public class CopySaveFiles(IDirectoryStorage directoryStorage, IIoWrapper ioWrap
             throw new ArgumentException("Steam save file directory is not set", nameof(_directoryStorage.SteamSaveFileDirectory));
         }
         
-        while (_ioWrapper.ProcessExists(Constants.DraginsDogma2ProcessName))
+        while (_ioWrapper.ProcessExists(Constants.DragonsDogma2ProcessName))
         {
             var steamSaveFileDirectory = _directoryStorage.SteamSaveFileDirectory;
             _logger.LogInformation("Copying files from: {SourceDirectory} to {DestinationDirectory}", steamSaveFileDirectory, _copyOptions.DestinationDirectory);

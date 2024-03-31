@@ -1,6 +1,4 @@
-using DragonsDogma2FileBackupWorker;
-
-namespace UnitTests;
+namespace DragonsDogma2FileBackupWorker.UnitTests;
 
 [TestFixture]
 public class CopyOptionsTests

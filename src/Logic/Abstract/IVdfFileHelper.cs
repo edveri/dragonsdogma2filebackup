@@ -1,5 +1,3 @@
-using DragonsDogma2FileBackupWorker.Models;
-
 namespace DragonsDogma2FileBackupWorker.Logic.Abstract;
 
 public interface IVdfFileHelper

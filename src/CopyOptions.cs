@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace DragonsDogma2FileBackupWorker;
 
 public class CopyOptions : IValidatableObject

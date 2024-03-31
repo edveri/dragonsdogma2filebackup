@@ -1,8 +1,4 @@
-using DragonsDogma2FileBackupWorker;
-using DragonsDogma2FileBackupWorker.Logic;
-using DragonsDogma2FileBackupWorker.Models;
-
-namespace UnitTests.Logic;
+namespace DragonsDogma2FileBackupWorker.UnitTests.Logic;
 
 [TestFixture]
 public class VdfFileHelperTests
