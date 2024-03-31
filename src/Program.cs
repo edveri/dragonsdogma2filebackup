@@ -21,10 +21,11 @@ try
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, "Host terminated unexpectedly");
+    Log.Logger.Fatal(ex, "Host terminated unexpectedly");
 }
 finally
 {
-    Log.Information("Stopping host");
+    Log.Logger.Information("Stopping host");
+    Console.Read();
     await Log.CloseAndFlushAsync();
 }
