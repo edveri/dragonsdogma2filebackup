@@ -11,11 +11,15 @@ var builder = Host.CreateApplicationBuilder(args);
 builder.Services.RegisterServices(configuration);
 
 var host = builder.Build();
+host.Services.GetRequiredService<IHostApplicationLifetime>().ApplicationStopping.Register(() =>
+{
+    Log.Logger.Information("*** Stopping host. Enter any key to exit. ***");
+});
 
 try
 {
-    Log.Information("Starting host");
-    await host.RunAsync();   
+    Log.Logger.Information("*** Starting host ***");
+    await host.RunAsync();
 }
 catch (Exception ex)
 {
@@ -23,7 +27,6 @@ catch (Exception ex)
 }
 finally
 {
-    Log.Logger.Information("Stopping host");
-    Console.Read();
     await Log.CloseAndFlushAsync();
+    Console.Read();
 }
