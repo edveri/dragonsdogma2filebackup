@@ -4,5 +4,5 @@ public interface IVdfFileHelper
 {
     LocalConfigFileData GetStartAndEndIndexOfSection(IList<string> lines);
     
-    public void UpdateSteamLaunchConfig(LocalConfigFileData configFileData, List<string> configFileLines, string launchOptionsString);
+    public void UpdateSteamLaunchConfig(LocalConfigFileData configFileData, IList<string> configFileLines, string launchOptionsString);
 }

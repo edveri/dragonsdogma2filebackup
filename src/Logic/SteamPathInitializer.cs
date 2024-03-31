@@ -9,14 +9,16 @@ public class SteamPathInitializer(IDirectoryStorage directoryStorage, IIoWrapper
     {
         foreach (var directory in _ioWrapper.GetDirectories(GetSteamUserDataPath()))
         {
-            
-            if(_ioWrapper.GetDirectories(directory).Any(dirName => dirName.EndsWith(Constants.DragonsDogma2Id)))
+            if (!_ioWrapper.GetDirectories(directory)
+                    .Any(dirName => dirName.EndsWith(Constants.DragonsDogma2Id)))
             {
-                _directoryStorage.SteamAccountDirectory = directory;
-                _directoryStorage.SteamAccountId = new DirectoryInfo(directory).Name;
-                _directoryStorage.SteamSaveFileDirectory = _ioWrapper.CombinePath(directory, Constants.DragonsDogma2Id);
-                return;
+                continue;
             }
+            
+            _directoryStorage.SteamAccountDirectory = directory;
+            _directoryStorage.SteamAccountId = new DirectoryInfo(directory).Name;
+            _directoryStorage.SteamSaveFileDirectory = _ioWrapper.CombinePath(directory, Constants.DragonsDogma2Id);
+            return;
         }
         throw new DirectoryNotFoundException("Could not find Dragons Dogma 2 save path in Steam directory");
     }

@@ -17,7 +17,7 @@ public class VdfFileHelperTests
     public void GetStartAndEndIndexOfSection_WhenLaunchOptionsFound_ReturnsCorrectData()
     {
         // Arrange
-        var configFileContentLines = new List<string> { "", Constants.DragonsDogma2Id, "{",  "2054970_eula", "", "LaunchOptions", "}", ""};
+        var configFileContentLines = new List<string> { "", Constants.DragonsDogma2Id, Constants.StartBracket.ToString(), Constants.LocalConfigEulaString, "", Constants.LaunchOptionsSectionRoot, "}", ""};
 
         // Act
         var result = _vdfFileHelper.GetStartAndEndIndexOfSection(configFileContentLines);
@@ -56,23 +56,23 @@ public class VdfFileHelperTests
     }
 
     private static readonly object[] TestCases =
-    {
+    [
         new object[] 
         { 
-            new List<string>{ "", Constants.DragonsDogma2Id, "{", "2054970_eula", "", "", "", "", "","", "", "", "", "", "", "","", "", "", "", "" }, 
+            new List<string>{ "", Constants.DragonsDogma2Id, Constants.StartBracket.ToString(), Constants.LocalConfigEulaString, "", "", "", "", "","", "", "", "", "", "", "","", "", "", "", "" }, 
             new LocalConfigFileData(1, false, -1)
         },
         new object[] 
         { 
-            new List<string>{ "", "", "", Constants.DragonsDogma2Id, "{", "", "", "", "Playtime", "","", "", "", "", "", "", "","", "", "", "", "", "" }, 
+            new List<string>{ "", "", "", Constants.DragonsDogma2Id, Constants.StartBracket.ToString(), "", "", "", Constants.LocalConfigPlaytimeString, "","", "", "", "", "", "", "","", "", "", "", "", "" }, 
             new LocalConfigFileData(3, false, -1)
         },
         new object[] 
         { 
-            new List<string>{ "", "", "", "", "", Constants.DragonsDogma2Id, "{", "", "", "", "Playtime", "LaunchOptions","", "", "", "", "", "","", "", "", "", "", "" }, 
+            new List<string>{ "", "", "", "", "", Constants.DragonsDogma2Id, Constants.StartBracket.ToString() , "", "", "", Constants.LocalConfigPlaytimeString, Constants.LaunchOptionsSectionRoot,"", "", "", "", "", "","", "", "", "", "", "" }, 
             new LocalConfigFileData(5, true, 11)
         }
-    };
+    ];
     
     [Test]
     public void UpdateSteamLaunchConfig_WhenLaunchOptionsExist_UpdatesConfigCorrectly()

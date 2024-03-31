@@ -19,7 +19,11 @@ public static class Constants
 
     public const string ConfigDirectoryName = "config";
     public const string LocalConfigFileName = "localconfig.vdf";
+    public const string LocalConfigEulaString = "2054970_eula";
+    public const string LocalConfigPlaytimeString = "Playtime";
     public const string LaunchOptionsDirectoryKey = "{LaunchOptionsDirectoryKey}";
     public const string LaunchOptionsText = $@"						""LaunchOptions""		""\""{LaunchOptionsDirectoryKey}\"" %COMMAND%""";
     public const string DragonsDogma2ProcessName = "DD2";
+    public const string LaunchOptionsSectionRoot = "LaunchOptions";
+    public const char StartBracket = '{';
 }
