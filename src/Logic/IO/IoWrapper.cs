@@ -1,6 +1,6 @@
 namespace DragonsDogma2FileBackupWorker.Logic.IO;
 
-public class IoWrapper :IIoWrapper
+public class IoWrapper : IIoWrapper
 {
     public async Task WriteAllTextAsync(string path, string contents) => 
         await File.WriteAllTextAsync(path, contents);
@@ -33,4 +33,6 @@ public class IoWrapper :IIoWrapper
         OperatingSystem.IsWindows();
     public string GetRegistryKeyValue(string keyName) =>
         Registry.GetValue(keyName, "InstallPath", null)?.ToString() ?? string.Empty;
+    public IDirectoryInfoWrapper GetDirectoryInfo(string path) => 
+        new DirectoryInfoWrapper(new DirectoryInfo(path));
 }

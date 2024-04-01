@@ -1,5 +1,3 @@
-using DragonsDogma2FileBackupWorker.Models.Abstract;
-
 namespace DragonsDogma2FileBackupWorker.Logic;
 
 public class DirectoryStorageBuilder(ISteamPathInitializer steamPathInitializer, IDirectoryStorage directoryStorage) : IDirectoryStorageBuilder

@@ -1,17 +1,17 @@
 namespace DragonsDogma2FileBackupWorker.Logic;
 
 public class Worker(IDirectoryAndSettingsFacade directoryAndSettingsFacade,
-    ICopySaveFiles copySaveFiles,
+    BackupManager backupManager,
     IHostApplicationLifetime hostApplicationLifetime) : BackgroundService
 {
     private readonly IDirectoryAndSettingsFacade _directoryAndSettingsFacade = directoryAndSettingsFacade ?? throw new ArgumentNullException(nameof(directoryAndSettingsFacade));
-    private readonly ICopySaveFiles _copySaveFiles = copySaveFiles ?? throw new ArgumentNullException(nameof(copySaveFiles));
+    private readonly BackupManager _backupManager = backupManager ?? throw new ArgumentNullException(nameof(backupManager));
     private readonly IHostApplicationLifetime _hostApplicationLifetime = hostApplicationLifetime ?? throw new ArgumentNullException(nameof(hostApplicationLifetime));
     
     protected override async Task ExecuteAsync(CancellationToken _)
     {
         await _directoryAndSettingsFacade.InitializeAndSetSteamDirectoriesAsync();
-        await _copySaveFiles.CopyFilesAsync();
+        await _backupManager.ExecuteBackupsAsync();
         _hostApplicationLifetime.StopApplication();
     }
 }

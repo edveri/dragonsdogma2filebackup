@@ -1,4 +1,4 @@
-using DragonsDogma2FileBackupWorker.Models.Abstract;
+using BackupManager = DragonsDogma2FileBackupWorker.Logic.BackupManager;
 
 namespace DragonsDogma2FileBackupWorker.Extensions;
 public static class ServiceCollectionExtensions
@@ -13,7 +13,7 @@ public static class ServiceCollectionExtensions
 
     private static void AddLogic(this IServiceCollection services)
     {
-        services.AddTransient<ICopySaveFiles, CopySaveFiles>();
+        services.AddTransient<BackupManager, BackupManager>();
         services.AddTransient<ISteamPathInitializer, SteamPathInitializer>();
         services.AddTransient<IApplicationFileAndDirectoryHelper, ApplicationFileAndDirectoryHelper>();
         services.AddTransient<ISteamLaunchOptionsEditor, SteamLaunchOptionsEditor>();

@@ -80,7 +80,7 @@ public class SteamPathInitializerTests
         _mockIoWrapper.Setup(m => m.IsWindowsOs()).Returns(true);
         _mockIoWrapper.Setup(m => m.GetRegistryKeyValue(It.IsAny<string>())).Returns(steamPath);
         _mockIoWrapper.Setup(m => m.CombinePath(steamPath, Constants.SteamUserDataDirectory)).Returns(steamUserDataPath);
-        _mockIoWrapper.Setup(m => m.GetDirectories(steamUserDataPath)).Returns(new[] { steamAccountDirectory });
+        _mockIoWrapper.Setup(m => m.GetDirectories(steamUserDataPath)).Returns([steamAccountDirectory]);
         _mockIoWrapper.Setup(m => m.GetDirectories(steamAccountDirectory)).Returns(Array.Empty<string>());
 
         //Act

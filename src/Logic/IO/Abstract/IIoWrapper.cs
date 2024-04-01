@@ -14,4 +14,5 @@ public interface IIoWrapper
     bool ProcessExists(string processName);
     bool IsWindowsOs();
     string GetRegistryKeyValue(string keyName);
+    IDirectoryInfoWrapper GetDirectoryInfo(string path);
 }
