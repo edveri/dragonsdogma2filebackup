@@ -1,6 +1,6 @@
 namespace DragonsDogma2FileBackupWorker.Logic.Abstract;
 
-public interface IDirectoryStorage
+public interface IDirectoryStorage : IValidatableObject
 { 
     string SteamAccountDirectory { get; set; }
     string SteamSaveFileDirectory { get; set; }

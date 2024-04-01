@@ -2,8 +2,8 @@ namespace DragonsDogma2FileBackupWorker.Logic;
 
 public class SteamPathInitializer(IDirectoryStorage directoryStorage, IIoWrapper ioWrapper) : ISteamPathInitializer
 {
-    private readonly IDirectoryStorage _directoryStorage = directoryStorage ?? throw new ArgumentNullException(nameof(directoryStorage)); 
     private readonly IIoWrapper _ioWrapper = ioWrapper ?? throw new ArgumentNullException(nameof(ioWrapper));
+    private readonly IDirectoryStorage _directoryStorage = directoryStorage ?? throw new ArgumentNullException(nameof(directoryStorage));
     
     public void InitializeSteamDirectories()
     {

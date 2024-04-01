@@ -68,4 +68,25 @@ public class SteamPathInitializerTests
         Assert.That(_directoryStorage.SteamAccountId, Is.EqualTo(steamAccountDirectory));
         Assert.That(_directoryStorage.SteamSaveFileDirectory, Is.EqualTo(steamSaveFileDirectory));
     }
+    
+    [Test]
+    public void InitializeSteamPathsAsync_WhenSteamPathIsSetAndDragonsDogma2FolderDoesNotExist_ThrowsDirectoryNotFoundException()
+    {
+        //Arrange
+        var steamPath = "steamPath";
+        var steamUserDataPath = "steamUserDataPath";
+        var steamAccountDirectory = "25470";
+
+        _mockIoWrapper.Setup(m => m.IsWindowsOs()).Returns(true);
+        _mockIoWrapper.Setup(m => m.GetRegistryKeyValue(It.IsAny<string>())).Returns(steamPath);
+        _mockIoWrapper.Setup(m => m.CombinePath(steamPath, Constants.SteamUserDataDirectory)).Returns(steamUserDataPath);
+        _mockIoWrapper.Setup(m => m.GetDirectories(steamUserDataPath)).Returns(new[] { steamAccountDirectory });
+        _mockIoWrapper.Setup(m => m.GetDirectories(steamAccountDirectory)).Returns(Array.Empty<string>());
+
+        //Act
+        var result = Assert.Throws<DirectoryNotFoundException>(() => _steamPathInitializer.InitializeSteamDirectories());
+
+        //Assert
+        Assert.That(result!.Message, Is.EqualTo("Could not find Dragons Dogma 2 save path in Steam directory"));
+    }
 }

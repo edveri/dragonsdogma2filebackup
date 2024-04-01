@@ -17,6 +17,8 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ILaunchOptionsEditor, LaunchOptionsEditor>();
         services.AddTransient<IIoWrapper, IoWrapper>();
         services.AddTransient<IVdfFileHelper, VdfFileHelper>();
+        services.AddTransient<IDirectoryStorageBuilder, DirectoryStorageBuilder>();
+        services.AddTransient<IDirectoryAndSettingsFacade, DirectoryAndSettingsFacade>();
         services.AddSingleton<IDirectoryStorage, DirectoryStorage>();
     }
 

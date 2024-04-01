@@ -2,7 +2,6 @@ namespace DragonsDogma2FileBackupWorker.Logic;
 
 public class VdfFileHelper : IVdfFileHelper
 {
-    
     public LocalConfigFileData GetStartAndEndIndexOfSection(IList<string> lines)
     {
         const int maxNumberOfLinesToSearch = 17;
