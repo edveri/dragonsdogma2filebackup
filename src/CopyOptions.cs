@@ -4,6 +4,7 @@ public class CopyOptions : IValidatableObject
 { 
     public string DestinationDirectory { get; set; } = @"C:\temp\DragonsDogma2Backups";
     public int WaitTimeInSeconds { get; set; } = 900;
+    public int MaximumNumberOfBackups { get; set; } = 200;
     public IEnumerable<ValidationResult> Validate(ValidationContext? validationContext)
     { 
         if (!Path.IsPathRooted(DestinationDirectory))
@@ -14,6 +15,11 @@ public class CopyOptions : IValidatableObject
         if (WaitTimeInSeconds < 0)
         {
             yield return new ValidationResult("Wait time must be greater than or equal to 0.", new[] { nameof(WaitTimeInSeconds) });
+        }
+        
+        if (MaximumNumberOfBackups < 0)
+        {
+            gyield return new ValidationResult("Maximum number of backups must be greater than or equal to 0.", new[] { nameof(MaximumNumberOfBackups) });
         }
     }
 }
