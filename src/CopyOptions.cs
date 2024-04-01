@@ -19,7 +19,7 @@ public class CopyOptions : IValidatableObject
         
         if (MaximumNumberOfBackups < 0)
         {
-            gyield return new ValidationResult("Maximum number of backups must be greater than or equal to 0.", new[] { nameof(MaximumNumberOfBackups) });
+            yield return new ValidationResult("Maximum number of backups must be greater than or equal to 0.", new[] { nameof(MaximumNumberOfBackups) });
         }
     }
 }
