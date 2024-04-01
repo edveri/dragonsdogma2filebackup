@@ -2,7 +2,7 @@ A small convenience app to make regular backup of my Dragon's Dogma 2 backups.
 Windows only for now. 
 
 1. Clone the repo or download it as zip file: https://github.com/edveri/dragonsdogma2filebackup/archive/refs/heads/main.zip 
-2. Extract the zip file and navigate to the **build** folder. Compiled files, ready to run, are found here.
+2. Extract the zip file and navigate to the **build** folder. 
 
 _Optional: Open appsettings.json in Notedpad and adjust interval and destination for backups, if needed._
 
