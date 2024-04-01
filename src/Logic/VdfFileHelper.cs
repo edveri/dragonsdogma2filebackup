@@ -1,20 +1,18 @@
 namespace DragonsDogma2FileBackupWorker.Logic;
 
-public class VdfFileHelper(ILogger<VdfFileHelper> logger) : IVdfFileHelper
+public class VdfFileHelper : IVdfFileHelper
 {
-    private readonly ILogger<VdfFileHelper> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    
-    public SteamConfigFileInfo GetStartAndEndIndexOfSection(IList<string> lines)
+    public SteamConfigFileInfo GetStartAndEndIndexOfSection(IList<string> fileContentLines)
     {
         var sectionStartIndex = -1;
         var launchOptionsIndex = -1;
         var launchOptionsFound = false;
         
-        var lastPossibleLineForSectionStart = lines.Count - 2 + Constants.MaxNumberOfConfigFileLinesToSearch;
+        var lastPossibleLineForSectionStart = fileContentLines.Count - 2 - Constants.MaxNumberOfConfigFileLinesToSearch;
         
         for (var i = 0; i < lastPossibleLineForSectionStart; i++)
         {
-            if (!IsDragonsDogmaRoot(lines[i], lines[i + 1]))
+            if (!IsDragonsDogmaRoot(fileContentLines[i], fileContentLines[i + 1]))
             {
                 continue;
             }
@@ -22,7 +20,7 @@ public class VdfFileHelper(ILogger<VdfFileHelper> logger) : IVdfFileHelper
             sectionStartIndex = i;
                 
             // Check if LaunchOptions already exists. We're assuming that it should be within 17 lines of the start of the section. The number 17 is ... a guess..
-            (launchOptionsFound, launchOptionsIndex, var dragonsDogmaSectionFound) = CheckForLaunchOptionsAndDd2Section(lines, sectionStartIndex);
+            (launchOptionsFound, launchOptionsIndex, var dragonsDogmaSectionFound) = CheckForLaunchOptionsAndDd2Section(fileContentLines, sectionStartIndex);
 
             // No need to continue the loop once the section is found
             if (launchOptionsFound || dragonsDogmaSectionFound) 
@@ -30,8 +28,12 @@ public class VdfFileHelper(ILogger<VdfFileHelper> logger) : IVdfFileHelper
                 break;
             }
         }
+        
+        ThrowExceptionIfStartSectionNotFound(sectionStartIndex);
+        
         return new SteamConfigFileInfo(sectionStartIndex, launchOptionsFound, launchOptionsIndex);
     }
+
     
     public void UpdateSteamLaunchConfig(SteamConfigFileInfo configFileInfo, IList<string> configFileLines,
         string launchOptionsString)
@@ -69,7 +71,7 @@ public class VdfFileHelper(ILogger<VdfFileHelper> logger) : IVdfFileHelper
                 dragonsDogmaSectionFound = true;
             }
         }
-
+        
         return (launchOptionsFound, foundLaunchOptionsIndex, dragonsDogmaSectionFound);
     }
     
@@ -80,4 +82,12 @@ public class VdfFileHelper(ILogger<VdfFileHelper> logger) : IVdfFileHelper
 
     private static bool IsLaunchSettingsLine(string currentFileLine) => 
         currentFileLine.Contains(Constants.LaunchOptionsSectionRoot, StringComparison.OrdinalIgnoreCase);
+    
+    private static void ThrowExceptionIfStartSectionNotFound(int sectionStartIndex)
+    {
+        if(sectionStartIndex < 0)
+        {
+            throw new ApplicationException("Could not find the start of the Dragons Dogma 2 section in the Steam config file.");
+        }
+    }
 }

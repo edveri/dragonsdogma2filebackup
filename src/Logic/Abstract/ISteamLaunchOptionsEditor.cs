@@ -1,6 +1,6 @@
 namespace DragonsDogma2FileBackupWorker.Logic.Abstract;
 
-public interface ILaunchOptionsEditor
+public interface ISteamLaunchOptionsEditor
 {
     Task SetSteamLaunchOptionsAsync();
 }

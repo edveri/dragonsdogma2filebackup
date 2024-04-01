@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ICopySaveFiles, CopySaveFiles>();
         services.AddTransient<ISteamPathInitializer, SteamPathInitializer>();
         services.AddTransient<IApplicationFileAndDirectoryHelper, ApplicationFileAndDirectoryHelper>();
-        services.AddTransient<ILaunchOptionsEditor, LaunchOptionsEditor>();
+        services.AddTransient<ISteamLaunchOptionsEditor, SteamLaunchOptionsEditor>();
         services.AddTransient<IIoWrapper, IoWrapper>();
         services.AddTransient<IVdfFileHelper, VdfFileHelper>();
         services.AddTransient<IDirectoryStorageBuilder, DirectoryStorageBuilder>();

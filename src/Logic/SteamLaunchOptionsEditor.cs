@@ -2,7 +2,7 @@ using DragonsDogma2FileBackupWorker.Models.Abstract;
 
 namespace DragonsDogma2FileBackupWorker.Logic;
 
-public class LaunchOptionsEditor(IVdfFileHelper vdfFileHelper, IDirectoryStorage directoryStorage, IIoWrapper ioWrapper) : ILaunchOptionsEditor
+public class SteamLaunchOptionsEditor(IVdfFileHelper vdfFileHelper, IDirectoryStorage directoryStorage, IIoWrapper ioWrapper) : ISteamLaunchOptionsEditor
 {
     private readonly IVdfFileHelper _vdfFileHelper = vdfFileHelper ?? throw new ArgumentNullException(nameof(vdfFileHelper));
     private readonly IDirectoryStorage _directoryStorage = directoryStorage ?? throw new ArgumentNullException(nameof(directoryStorage));

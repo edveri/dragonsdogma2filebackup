@@ -15,7 +15,8 @@ public class VdfFileHelperTests
     public void GetStartAndEndIndexOfSection_WhenLaunchOptionsFound_ReturnsCorrectData()
     {
         // Arrange
-        var configFileContentLines = new List<string> { "", Constants.DragonsDogma2Id, Constants.StartBracket.ToString(), Constants.LocalConfigEulaString, "", Constants.LaunchOptionsSectionRoot, "}", ""};
+        var configFileContentLines = new List<string> { "", Constants.DragonsDogma2Id, Constants.StartBracket.ToString(), Constants.LocalConfigEulaString, "", Constants.LaunchOptionsSectionRoot, "}", ""}
+            .Concat(Enumerable.Range(1, Constants.MaxNumberOfConfigFileLinesToSearch).Select(i => i.ToString())).ToList();
 
         // Act
         var result = _vdfFileHelper.GetStartAndEndIndexOfSection(configFileContentLines);
@@ -57,20 +58,36 @@ public class VdfFileHelperTests
     [
         new object[] 
         { 
-            new List<string>{ "", Constants.DragonsDogma2Id, Constants.StartBracket.ToString(), Constants.LocalConfigEulaString, "", "", "", "", "","", "", "", "", "", "", "","", "", "", "", "" }, 
+            new List<string>{ "", Constants.DragonsDogma2Id, Constants.StartBracket.ToString(), Constants.LocalConfigEulaString}
+                .Concat(Enumerable.Range(1, Constants.MaxNumberOfConfigFileLinesToSearch).Select(i => i.ToString())).ToList(), 
             new SteamConfigFileInfo(1, false, -1)
         },
         new object[] 
         { 
-            new List<string>{ "", "", "", Constants.DragonsDogma2Id, Constants.StartBracket.ToString(), "", "", "", Constants.LocalConfigPlaytimeString, "","", "", "", "", "", "", "","", "", "", "", "", "" }, 
+            new List<string>{ "", "", "", Constants.DragonsDogma2Id, Constants.StartBracket.ToString(), "", "", "", Constants.LocalConfigPlaytimeString,}
+                .Concat(Enumerable.Range(1, Constants.MaxNumberOfConfigFileLinesToSearch).Select(i => i.ToString())).ToList(), 
             new SteamConfigFileInfo(3, false, -1)
         },
         new object[] 
         { 
-            new List<string>{ "", "", "", "", "", Constants.DragonsDogma2Id, Constants.StartBracket.ToString() , "", "", "", Constants.LocalConfigPlaytimeString, Constants.LaunchOptionsSectionRoot,"", "", "", "", "", "","", "", "", "", "", "" }, 
+            new List<string>{ "", "", "", "", "", Constants.DragonsDogma2Id, Constants.StartBracket.ToString() , "", "", "", Constants.LocalConfigPlaytimeString, Constants.LaunchOptionsSectionRoot}
+                .Concat(Enumerable.Range(1, Constants.MaxNumberOfConfigFileLinesToSearch).Select(i => i.ToString())).ToList(), 
             new SteamConfigFileInfo(5, true, 11)
         }
     ];
+    
+    [Test]
+    public void GetStartAndEndIndexOfSection_WhenDragonsDogmaSectionNotFound_ThrowsException()
+    {
+        // Arrange
+        var configFileContentLines = Enumerable.Range(1, 100).Select(i => i.ToString()).ToList();
+        
+        // Act
+        var result = Assert.Throws<ApplicationException>(() => _vdfFileHelper.GetStartAndEndIndexOfSection(configFileContentLines));
+        
+        // Assert
+        Assert.That(result!.Message, Is.EqualTo("Could not find the start of the Dragons Dogma 2 section in the Steam config file."));
+    }
     
     [Test]
     public void UpdateSteamLaunchConfig_WhenLaunchOptionsExist_UpdatesConfigCorrectly()
@@ -88,7 +105,7 @@ public class VdfFileHelperTests
     }
     
     [Test]
-    public void UpdateSteamLaunchConfig_WhenLaunchOptionNotExists_UpdatesConfigCorrectly()
+    public void UpdateSteamLaunchConfig_WhenLaunchOptionsDoesNotExist_UpdatesConfigCorrectly()
     {
         // Arrange
         var configFileData = new SteamConfigFileInfo(3, false, 5);
