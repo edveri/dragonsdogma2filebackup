@@ -1,5 +1,3 @@
-using DragonsDogma2FileBackupWorker.Models.Abstract;
-
 namespace DragonsDogma2FileBackupWorker.UnitTests.Logic;
 
 [TestFixture]
@@ -51,7 +49,7 @@ public class SteamLaunchOptionsEditorTests
             .Returns("dummy");
         
         _mockIoWrapper.Setup(m => m.CombinePath(expectedSteamConfigDir, It.Is<string>(s => s.StartsWith($"{Constants.LocalConfigFileName}_backup"))))
-            .Returns("dummy");
+            .Returns(expectedBackupName);
         
         //Act
         await _steamLaunchOptionsEditor.SetSteamLaunchOptionsAsync();
@@ -66,25 +64,63 @@ public class SteamLaunchOptionsEditorTests
         //Arrange
         var expectedSteamConfigDir = Path.Combine(SteamAccountDirectory, Constants.ConfigDirectoryName);
         var expectedSteamConfigFile = Path.Combine(expectedSteamConfigDir, Constants.LocalConfigFileName);
-        var expectedBackupName = $"{Constants.LocalConfigFileName}_backup{DateTime.Now:hh-mm-ss}";
-        
+        var configFileContent = new[]{"this", "is", "config", "file"};
+        var steamConfigFileInfo = new SteamConfigFileInfo(3, false, -1);
+
         _mockIoWrapper.Setup(x => x.CombinePath(SteamAccountDirectory, Constants.ConfigDirectoryName))
-            .Returns(expectedSteamConfigDir)
-            .Verifiable();
-        
+            .Returns(expectedSteamConfigDir);
+
         _mockIoWrapper.Setup(x => x.CombinePath(expectedSteamConfigDir, Constants.LocalConfigFileName))
+            .Returns(expectedSteamConfigFile);
+
+        _mockIoWrapper.Setup(x => x.CombinePath(SteamRootPath, Constants.SteamAppsDirectory, Constants.BatchFileName))
             .Returns(expectedSteamConfigFile)
             .Verifiable();
+        
+        _mockIoWrapper.Setup(m => m.ReadAllLinesAsync(expectedSteamConfigFile))
+            .ReturnsAsync(configFileContent)
+            .Verifiable();
 
-        _mockIoWrapper.Setup(m => m.CombinePath(SteamRootPath, Constants.SteamAppsDirectory, Constants.BatchFileName))
-            .Returns("dummy");
-        
-        
+        _mockVdfFileReader.Setup(m => m.GetStartAndEndIndexOfSection(configFileContent))
+            .Returns(steamConfigFileInfo)
+            .Verifiable();
         
         //Act
         await _steamLaunchOptionsEditor.SetSteamLaunchOptionsAsync();
         
         //Assert
-        _mockIoWrapper.Verify(m => m.WriteAllLinesAsync(expectedSteamConfigFile, It.IsAny<IEnumerable<string>>()), Times.Once);
+        _mockIoWrapper.Verify();
+        _mockVdfFileReader.Verify(m => m.UpdateSteamLaunchConfig(It.IsAny<SteamConfigFileInfo>(), It.IsAny<List<string>>(), It.IsAny<string>()), Times.Once);
+    }
+    
+    [Test]
+    public async Task SetSteamLaunchOptionsAsync_VerifyWriteAllLinesAsyncCall()
+    {
+        //Arrange
+        var expectedSteamConfigDir = Path.Combine(SteamAccountDirectory, Constants.ConfigDirectoryName);
+        var expectedSteamConfigFile = Path.Combine(expectedSteamConfigDir, Constants.LocalConfigFileName);
+        var configFileContent = new[]{"this", "is", "config", "file"};
+        var steamConfigFileInfo = new SteamConfigFileInfo(3, false, -1);
+
+        _mockIoWrapper.Setup(x => x.CombinePath(SteamAccountDirectory, Constants.ConfigDirectoryName))
+            .Returns(expectedSteamConfigDir);
+
+        _mockIoWrapper.Setup(x => x.CombinePath(expectedSteamConfigDir, Constants.LocalConfigFileName))
+            .Returns(expectedSteamConfigFile);
+
+        _mockIoWrapper.Setup(x => x.CombinePath(SteamRootPath, Constants.SteamAppsDirectory, Constants.BatchFileName))
+            .Returns(expectedSteamConfigFile);
+
+        _mockIoWrapper.Setup(m => m.ReadAllLinesAsync(expectedSteamConfigFile))
+            .ReturnsAsync(configFileContent);
+
+        _mockVdfFileReader.Setup(m => m.GetStartAndEndIndexOfSection(configFileContent))
+            .Returns(steamConfigFileInfo);
+        
+        //Act
+        await _steamLaunchOptionsEditor.SetSteamLaunchOptionsAsync();
+        
+        //Assert
+        _mockIoWrapper.Verify(m => m.WriteAllLinesAsync(expectedSteamConfigFile, configFileContent), Times.Once);
     }
 }
