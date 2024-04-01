@@ -1,3 +1,5 @@
+using DragonsDogma2FileBackupWorker.Models.Abstract;
+
 namespace DragonsDogma2FileBackupWorker.Logic;
 
 public class SteamPathInitializer(IDirectoryStorage directoryStorage, IIoWrapper ioWrapper) : ISteamPathInitializer

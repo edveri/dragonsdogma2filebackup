@@ -1,3 +1,5 @@
+using DragonsDogma2FileBackupWorker.Models.Abstract;
+
 namespace DragonsDogma2FileBackupWorker.Models;
 
 public class DirectoryStorage : IDirectoryStorage

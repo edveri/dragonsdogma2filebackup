@@ -1,71 +1,83 @@
 namespace DragonsDogma2FileBackupWorker.Logic;
 
-public class VdfFileHelper : IVdfFileHelper
+public class VdfFileHelper(ILogger<VdfFileHelper> logger) : IVdfFileHelper
 {
-    public LocalConfigFileData GetStartAndEndIndexOfSection(IList<string> lines)
+    private readonly ILogger<VdfFileHelper> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    
+    public SteamConfigFileInfo GetStartAndEndIndexOfSection(IList<string> lines)
     {
-        const int maxNumberOfLinesToSearch = 17;
-
-        var startIndexOfSection = -1;
-        var dd2SectionFound = false;
-        var launchOptionsFound = false;
+        var sectionStartIndex = -1;
         var launchOptionsIndex = -1;
+        var launchOptionsFound = false;
         
-        for (var i = 0; i < lines.Count - 1; i++)
+        var lastPossibleLineForSectionStart = lines.Count - 2 + Constants.MaxNumberOfConfigFileLinesToSearch;
+        
+        for (var i = 0; i < lastPossibleLineForSectionStart; i++)
         {
-            if (!IsDragonsDogmaRoot(lines, i))
+            if (!IsDragonsDogmaRoot(lines[i], lines[i + 1]))
             {
                 continue;
             }
             
-            startIndexOfSection = i;
+            sectionStartIndex = i;
                 
-            // Check if LaunchOptions already exists. We're assuming that it should be within 17 lines of the start of the section
-            for (var j = startIndexOfSection; j < startIndexOfSection + maxNumberOfLinesToSearch; j++)
-            {
-                if (IsLaunchSettingsLine(lines, j))
-                {
-                    launchOptionsFound = true;
-                    launchOptionsIndex = j;
-                    break;
-                }
-
-                if (IsDd2Section(lines, j))
-                {
-                    dd2SectionFound = true;
-                }
-            }
+            // Check if LaunchOptions already exists. We're assuming that it should be within 17 lines of the start of the section. The number 17 is ... a guess..
+            (launchOptionsFound, launchOptionsIndex, var dragonsDogmaSectionFound) = CheckForLaunchOptionsAndDd2Section(lines, sectionStartIndex);
 
             // No need to continue the loop once the section is found
-            if (launchOptionsFound || dd2SectionFound) 
+            if (launchOptionsFound || dragonsDogmaSectionFound) 
             {
                 break;
             }
         }
-        return new LocalConfigFileData(startIndexOfSection, launchOptionsFound, launchOptionsIndex);
+        return new SteamConfigFileInfo(sectionStartIndex, launchOptionsFound, launchOptionsIndex);
     }
     
-    public void UpdateSteamLaunchConfig(LocalConfigFileData configFileData, IList<string> configFileLines,
+    public void UpdateSteamLaunchConfig(SteamConfigFileInfo configFileInfo, IList<string> configFileLines,
         string launchOptionsString)
     {
-        if (configFileData.LaunchOptionsExists)
+        if (configFileInfo.LaunchOptionsExists)
         {
-            configFileLines[configFileData.LaunchOptionsIndex] = launchOptionsString;
+            configFileLines[configFileInfo.LaunchOptionsIndex] = launchOptionsString;
         }
         else
         {
-            configFileLines.Insert(configFileData.StartIndex + 2, launchOptionsString);
+            configFileLines.Insert(configFileInfo.StartIndex + 2, launchOptionsString);
         }
     }
     
-    private static bool IsDragonsDogmaRoot(IList<string> lines, int i) => 
-        lines[i].Contains(Constants.DragonsDogma2Id, StringComparison.OrdinalIgnoreCase) && lines[i + 1].Contains(Constants.StartBracket, StringComparison.OrdinalIgnoreCase);
+    private static bool IsDragonsDogmaRoot(string currentFileLine, string nextLine) => 
+        currentFileLine.Contains(Constants.DragonsDogma2Id, StringComparison.OrdinalIgnoreCase) && nextLine.Contains(Constants.StartBracket, StringComparison.OrdinalIgnoreCase);
 
+    private (bool launchOptionsFound, int foundLaunchOptionsIndex, bool dragonsDogmaSectionFound) CheckForLaunchOptionsAndDd2Section(IList<string> lines, int startIndexOfSection)
+    {
+        var launchOptionsFound = false;
+        var foundLaunchOptionsIndex = -1;
+        var dragonsDogmaSectionFound = false;
+
+        for (var j = startIndexOfSection; j < startIndexOfSection + Constants.MaxNumberOfConfigFileLinesToSearch; j++)
+        {
+            if (IsLaunchSettingsLine(lines[j]))
+            {
+                launchOptionsFound = true;
+                foundLaunchOptionsIndex = j;
+                break;
+            }
+
+            if (IsDd2Section(lines[j]))
+            {
+                dragonsDogmaSectionFound = true;
+            }
+        }
+
+        return (launchOptionsFound, foundLaunchOptionsIndex, dragonsDogmaSectionFound);
+    }
+    
     //Check if the section contains an EULA or Playtime string - if so we assume it's the DD2 section
-    private static bool IsDd2Section(IList<string> lines, int j) =>
-        lines[j].Contains(Constants.LocalConfigEulaString, StringComparison.OrdinalIgnoreCase) ||
-        lines[j].Contains(Constants.LocalConfigPlaytimeString, StringComparison.OrdinalIgnoreCase);
+    private static bool IsDd2Section(string currentFileLine) =>
+        currentFileLine.Contains(Constants.LocalConfigEulaString, StringComparison.OrdinalIgnoreCase) ||
+        currentFileLine.Contains(Constants.LocalConfigPlaytimeString, StringComparison.OrdinalIgnoreCase);
 
-    private static bool IsLaunchSettingsLine(IList<string> lines, int j) => 
-        lines[j].Contains(Constants.LaunchOptionsSectionRoot, StringComparison.OrdinalIgnoreCase);
+    private static bool IsLaunchSettingsLine(string currentFileLine) => 
+        currentFileLine.Contains(Constants.LaunchOptionsSectionRoot, StringComparison.OrdinalIgnoreCase);
 }

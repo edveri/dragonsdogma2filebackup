@@ -26,4 +26,5 @@ public static class Constants
     public const string DragonsDogma2ProcessName = "DD2";
     public const string LaunchOptionsSectionRoot = "LaunchOptions";
     public const char StartBracket = '{';
+    public const int MaxNumberOfConfigFileLinesToSearch = 17;
 }

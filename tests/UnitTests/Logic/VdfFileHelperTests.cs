@@ -27,22 +27,22 @@ public class VdfFileHelperTests
     }
 
     [TestCaseSource(nameof(TestCases))]
-    public void GetStartAndEndIndexOfSection_WhenLaunchOptionsNotFound_ReturnsCorrectData(IList<string> configFileContentLines, LocalConfigFileData localConfigFileData)
+    public void GetStartAndEndIndexOfSection_WhenLaunchOptionsNotFound_ReturnsCorrectData(IList<string> configFileContentLines, SteamConfigFileInfo steamConfigFileInfo)
     {
         // Act
         var result = _vdfFileHelper.GetStartAndEndIndexOfSection(configFileContentLines);
 
         // Assert
-        Assert.That(result.StartIndex, Is.EqualTo(localConfigFileData.StartIndex));
-        Assert.That(result.LaunchOptionsExists, Is.EqualTo(localConfigFileData.LaunchOptionsExists));
-        Assert.That(result.LaunchOptionsIndex, Is.EqualTo(localConfigFileData.LaunchOptionsIndex));
+        Assert.That(result.StartIndex, Is.EqualTo(steamConfigFileInfo.StartIndex));
+        Assert.That(result.LaunchOptionsExists, Is.EqualTo(steamConfigFileInfo.LaunchOptionsExists));
+        Assert.That(result.LaunchOptionsIndex, Is.EqualTo(steamConfigFileInfo.LaunchOptionsIndex));
     }
 
     [Test]
     public void UpdateSteamLaunchConfig_WhenLaunchOptionDoesNotExist_InsertsConfigCorrectly()
     {
         // Arrange
-        var configFileData = new LocalConfigFileData(3, false, -1);
+        var configFileData = new SteamConfigFileInfo(3, false, -1);
         var configFileLines = Enumerable.Range(1, 10).Select(i => i.ToString()).ToList();
         var launchOptionsString = "this is a test string";
 
@@ -58,17 +58,17 @@ public class VdfFileHelperTests
         new object[] 
         { 
             new List<string>{ "", Constants.DragonsDogma2Id, Constants.StartBracket.ToString(), Constants.LocalConfigEulaString, "", "", "", "", "","", "", "", "", "", "", "","", "", "", "", "" }, 
-            new LocalConfigFileData(1, false, -1)
+            new SteamConfigFileInfo(1, false, -1)
         },
         new object[] 
         { 
             new List<string>{ "", "", "", Constants.DragonsDogma2Id, Constants.StartBracket.ToString(), "", "", "", Constants.LocalConfigPlaytimeString, "","", "", "", "", "", "", "","", "", "", "", "", "" }, 
-            new LocalConfigFileData(3, false, -1)
+            new SteamConfigFileInfo(3, false, -1)
         },
         new object[] 
         { 
             new List<string>{ "", "", "", "", "", Constants.DragonsDogma2Id, Constants.StartBracket.ToString() , "", "", "", Constants.LocalConfigPlaytimeString, Constants.LaunchOptionsSectionRoot,"", "", "", "", "", "","", "", "", "", "", "" }, 
-            new LocalConfigFileData(5, true, 11)
+            new SteamConfigFileInfo(5, true, 11)
         }
     ];
     
@@ -76,7 +76,7 @@ public class VdfFileHelperTests
     public void UpdateSteamLaunchConfig_WhenLaunchOptionsExist_UpdatesConfigCorrectly()
     {
         // Arrange
-        var configFileData = new LocalConfigFileData(3, true, 5);
+        var configFileData = new SteamConfigFileInfo(3, true, 5);
         var configFileLines = Enumerable.Range(1, 10).Select(i => i.ToString()).ToList();
         var launchOptionsString = "this is a test string";
 
@@ -91,7 +91,7 @@ public class VdfFileHelperTests
     public void UpdateSteamLaunchConfig_WhenLaunchOptionNotExists_UpdatesConfigCorrectly()
     {
         // Arrange
-        var configFileData = new LocalConfigFileData(3, false, 5);
+        var configFileData = new SteamConfigFileInfo(3, false, 5);
         var configFileLines = Enumerable.Range(1, 10).Select(i => i.ToString()).ToList();
         var launchOptionsString = "this is a test string";
 

@@ -1,4 +1,4 @@
-namespace DragonsDogma2FileBackupWorker.Logic.Abstract;
+namespace DragonsDogma2FileBackupWorker.Models.Abstract;
 
 public interface IDirectoryStorage : IValidatableObject
 { 

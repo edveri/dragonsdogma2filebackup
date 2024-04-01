@@ -2,7 +2,7 @@ namespace DragonsDogma2FileBackupWorker.Logic.Abstract;
 
 public interface IVdfFileHelper
 {
-    LocalConfigFileData GetStartAndEndIndexOfSection(IList<string> lines);
+    SteamConfigFileInfo GetStartAndEndIndexOfSection(IList<string> lines);
     
-    public void UpdateSteamLaunchConfig(LocalConfigFileData configFileData, IList<string> configFileLines, string launchOptionsString);
+    public void UpdateSteamLaunchConfig(SteamConfigFileInfo configFileInfo, IList<string> configFileLines, string launchOptionsString);
 }

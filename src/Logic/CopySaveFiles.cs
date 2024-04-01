@@ -1,4 +1,6 @@
-﻿namespace DragonsDogma2FileBackupWorker.Logic;
+﻿using DragonsDogma2FileBackupWorker.Models.Abstract;
+
+namespace DragonsDogma2FileBackupWorker.Logic;
 
 public class CopySaveFiles(IDirectoryStorage directoryStorage, IIoWrapper ioWrapper, IOptions<CopyOptions> copyOptions, ILogger<CopySaveFiles> logger) : ICopySaveFiles
 {
